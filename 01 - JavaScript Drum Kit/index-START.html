@@ -65,22 +65,34 @@
     const activatePlayingStyle = (keyElement) => keyElement.classList.add('playing');
     const disablePlayingStyle = (keyElement) => keyElement.classList.remove('playing');
 
-    function playSound(audioElement, keyElement) {
-      activatePlayingStyle(keyElement);
+    function playSound(audioElement) {
+      audioElement.currentTime = 0;
       audioElement.play();
-      setTimeout(() => disablePlayingStyle(keyElement), 100);
+    }
+
+    function playSoundByKey(keyCode) {
+      const keyElement = getKeyElement(keyCode);
+      const audioElement = getAudioElement(keyCode);
+      if (!keyElement || !audioElement) return;
+
+      activatePlayingStyle(keyElement);
+      playSound(audioElement);
+    }
+
+    function handleTransitionEnd(event) {
+      if (event.propertyName !== 'transform') return;
+
+      const keyElement = event.target;
+      disablePlayingStyle(keyElement);
     }
 
     function handleKeyDown(event) {
       const keyCode = event.keyCode;
-      const audioElement = getAudioElement(keyCode);
-
-      if (audioElement) {
-        const keyElement = getKeyElement(keyCode);
-        playSound(audioElement, keyElement);
-      }
+      playSoundByKey(keyCode);
     }
 
+    const keys = Array.from(document.querySelectorAll('.key'));
+    keys.forEach(key => key.addEventListener('transitionend', handleTransitionEnd));
     document.addEventListener('keydown', handleKeyDown);
   </script>
 
