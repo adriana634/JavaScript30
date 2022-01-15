@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>JS Drum Kit</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 
@@ -57,10 +59,31 @@
   <audio data-key="75" src="sounds/tom.wav"></audio>
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
-<script>
+  <script>
+    const getAudioElement = (keyCode) => document.querySelector(`audio[data-key="${keyCode}"]`);
+    const getKeyElement = (keyCode) => document.querySelector(`.key[data-key="${keyCode}"]`);
+    const activatePlayingStyle = (keyElement) => keyElement.classList.add('playing');
+    const disablePlayingStyle = (keyElement) => keyElement.classList.remove('playing');
 
-</script>
+    function playSound(audioElement, keyElement) {
+      activatePlayingStyle(keyElement);
+      audioElement.play();
+      setTimeout(() => disablePlayingStyle(keyElement), 100);
+    }
 
+    function handleKeyDown(event) {
+      const keyCode = event.keyCode;
+      const audioElement = getAudioElement(keyCode);
+
+      if (audioElement) {
+        const keyElement = getKeyElement(keyCode);
+        playSound(audioElement, keyElement);
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+  </script>
 
 </body>
+
 </html>
