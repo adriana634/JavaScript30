@@ -73,14 +73,17 @@
   </style>
 
   <script>
-    const secondsToDegreeRatio = 60 / 360;
-    const secondsToDegrees = (seconds) => (seconds / secondsToDegreeRatio) + 90;
+    const secondsToDegreesOffset = 90;
+    const secondsToDegreesRatio = 60 / 360;
+    const secondsToDegrees = (seconds) => (seconds / secondsToDegreesRatio) + secondsToDegreesOffset;
 
+    const minutesToDegreesOffset = 90;
     const minutesToDegreesRatio = 60 / 360;
-    const minutesToDegrees = (minutes) => (minutes / minutesToDegreesRatio) + 90;
+    const minutesToDegrees = (minutes) => (minutes / minutesToDegreesRatio) + minutesToDegreesOffset;
 
+    const hoursToDegreesOffset = 36;
     const hoursToDegreesRatio = 24 / 360;
-    const hoursToDegrees = (hours) => (hours / hoursToDegreesRatio) + 90;
+    const hoursToDegrees = (hours) => (hours / hoursToDegreesRatio) + hoursToDegreesOffset;
 
     const hoursElement = document.querySelector('.hand.hour-hand');
     const minutesElement = document.querySelector('.hand.min-hand');
@@ -92,9 +95,9 @@
       const nowMinutes = now.getMinutes();
       const nowSeconds = now.getSeconds();
 
-      const hoursDegrees = hoursToDegrees(nowHours);
-      const minutesDegrees = minutesToDegrees(nowMinutes);
-      const secondsDegrees = secondsToDegrees(nowSeconds);
+      const hoursDegrees = hoursToDegrees(nowHours) % 360;
+      const minutesDegrees = minutesToDegrees(nowMinutes) % 360;
+      const secondsDegrees = secondsToDegrees(nowSeconds) % 360;
 
       hoursElement.style.transform = `rotate(${hoursDegrees}deg)`;
       secondsElement.style.transform = `rotate(${secondsDegrees}deg)`;
