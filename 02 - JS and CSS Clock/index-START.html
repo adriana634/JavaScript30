@@ -73,17 +73,16 @@
   </style>
 
   <script>
-    const secondsToDegreesOffset = 90;
+    const initialDegreesOffset = 90;
+
     const secondsToDegreesRatio = 60 / 360;
-    const secondsToDegrees = (seconds) => (seconds / secondsToDegreesRatio) + secondsToDegreesOffset;
+    const secondsToDegrees = (seconds) => (seconds / secondsToDegreesRatio) + initialDegreesOffset;
 
-    const minutesToDegreesOffset = 90;
     const minutesToDegreesRatio = 60 / 360;
-    const minutesToDegrees = (minutes) => (minutes / minutesToDegreesRatio) + minutesToDegreesOffset;
+    const minutesToDegrees = (minutes) => (minutes / minutesToDegreesRatio) + initialDegreesOffset;
 
-    const hoursToDegreesOffset = 36;
-    const hoursToDegreesRatio = 24 / 360;
-    const hoursToDegrees = (hours) => (hours / hoursToDegreesRatio) + hoursToDegreesOffset;
+    const hoursToDegreesRatio = 12 / 360;
+    const hoursToDegrees = (hours) => (hours / hoursToDegreesRatio) + initialDegreesOffset;
 
     const hoursElement = document.querySelector('.hand.hour-hand');
     const minutesElement = document.querySelector('.hand.min-hand');
@@ -100,11 +99,12 @@
       const secondsDegrees = secondsToDegrees(nowSeconds) % 360;
 
       hoursElement.style.transform = `rotate(${hoursDegrees}deg)`;
-      secondsElement.style.transform = `rotate(${secondsDegrees}deg)`;
       minutesElement.style.transform = `rotate(${minutesDegrees}deg)`;
+      secondsElement.style.transform = `rotate(${secondsDegrees}deg)`;
     }
 
-    setInterval(() => clock(), 1000);
+    setInterval(clock, 1000);
+    clock();
   </script>
 </body>
 
