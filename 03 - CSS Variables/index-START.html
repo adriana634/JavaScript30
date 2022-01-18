@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Scoped CSS Variables and JS</title>
 </head>
+
 <body>
   <h2>Update CSS Variables with <span class='hl'>JS</span></h2>
 
@@ -21,10 +23,15 @@
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
-
     /*
       misc styles, nothing to do with CSS variables
     */
+
+    :root {
+      --spacing: 0;
+      --blur: 0;
+      --base-color: white;
+    }
 
     body {
       text-align: center;
@@ -42,10 +49,61 @@
     input {
       width: 100px;
     }
+
+    .hl {
+      color: var(--base-color);
+    }
+
+    img {
+      border: var(--spacing) solid var(--base-color);
+      filter: blur(var(--blur));
+    }
   </style>
 
   <script>
+    const rootElement = document.querySelector(':root');
+
+    const spacingInput = document.querySelector("input[name='spacing']");
+    const blurInput = document.querySelector("input[name='blur']");
+    const baseInput = document.querySelector("[name='base']");
+
+    const setRootProperty = (property, value) => rootElement.style.setProperty(property, value);
+    const setSpacingProperty = (value) => setRootProperty('--spacing', `${value}px`);
+    const setBlurProperty = (value) => setRootProperty('--blur', `${value}px`);
+    const setBaseProperty = (value) => setRootProperty('--base-color', value);
+
+    function handleSpacingInput(event) {
+      const spacingInput = event.target;
+      const value = spacingInput.value;
+      setSpacingProperty(value);
+    }
+
+    function handleBlurInput(event) {
+      const blurInput = event.target;
+      const value = blurInput.value;
+      setBlurProperty(value);
+    }
+
+    function handleBaseInput(event) {
+      const baseInput = event.target;
+      const value = baseInput.value;
+      setBaseProperty(value);
+    }
+
+    const spacingValue = spacingInput.value;
+    setSpacingProperty(spacingValue);
+
+    const blurValue = blurInput.value;
+    setBlurProperty(blurValue);
+
+    const baseValue = baseInput.value;
+    setBaseProperty(baseValue);
+
+    spacingInput.addEventListener('input', handleSpacingInput);
+    blurInput.addEventListener('input', handleBlurInput);
+    baseInput.addEventListener('input', handleBaseInput);
   </script>
 
 </body>
+
 </html>
