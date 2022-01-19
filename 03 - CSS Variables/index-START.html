@@ -28,9 +28,9 @@
     */
 
     :root {
-      --spacing: 0;
-      --blur: 0;
-      --base-color: white;
+      --spacing: 10px;
+      --blur: 10px;
+      --base-color: #ffc600;
     }
 
     body {
@@ -89,15 +89,6 @@
       const value = baseInput.value;
       setBaseProperty(value);
     }
-
-    const spacingValue = spacingInput.value;
-    setSpacingProperty(spacingValue);
-
-    const blurValue = blurInput.value;
-    setBlurProperty(blurValue);
-
-    const baseValue = baseInput.value;
-    setBaseProperty(baseValue);
 
     spacingInput.addEventListener('input', handleSpacingInput);
     blurInput.addEventListener('input', handleBlurInput);
