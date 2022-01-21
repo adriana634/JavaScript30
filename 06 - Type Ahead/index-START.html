@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Type Ahead 👀</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
   <form class="search-form">
@@ -14,9 +16,106 @@
       <li>or a state</li>
     </ul>
   </form>
-<script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+  <script>
+    const numberFormatter = new Intl.NumberFormat('en-US');
 
-</script>
+    const endpoint =
+      'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+    async function fetchJSON(endpoint) {
+      const response = await fetch(endpoint);
+      const data = await response.json();
+      return data;
+    }
+
+    const searchElement = document.querySelector('.search');
+    const suggestionsElement = document.querySelector('.suggestions');
+
+    function clearSuggestions() {
+      const suggestionElements = document.querySelectorAll('.suggestions li');
+      suggestionElements.forEach(suggestionElement => suggestionElement.remove());
+    }
+
+    function highlightWords(text, wordsToHighlight) {
+      let html = text;
+
+      for (let i = 0; i < wordsToHighlight.length; i++) {
+        const word = wordsToHighlight[i];
+        html = html.toLowerCase().replaceAll(word, `<span class="hl">${word.toLowerCase()}</span>`);
+      }
+
+      return html;
+    }
+
+    function addSuggestionElement(city, state, population, wordsToHighlight) {
+      const localePopulation = numberFormatter.format(population);
+      const wordsSpanElement = document.createElement('span');
+
+      const cityHTML = highlightWords(city, wordsToHighlight);
+      const stateHTML = highlightWords(state, wordsToHighlight);
+      const descriptionHTML = `${cityHTML}, ${stateHTML}`;
+
+      const liElement = document.createElement('li');
+      wordsSpanElement.innerHTML = descriptionHTML;
+
+      liElement.appendChild(wordsSpanElement);
+
+      const spanElement = document.createElement('span');
+      const spanTextNode = document.createTextNode(localePopulation);
+      spanElement.appendChild(spanTextNode);
+      liElement.appendChild(spanElement);
+
+      suggestionsElement.appendChild(liElement);
+    }
+
+    function addDefaultSuggestionElement(description) {
+      const liElement = document.createElement('li');
+      const liTextNode = document.createTextNode(description);
+      liElement.appendChild(liTextNode);
+
+      suggestionsElement.appendChild(liElement);
+    }
+
+    function addDefaultSuggestions() {
+      clearSuggestions();
+      addDefaultSuggestionElement('Filter for a city');
+      addDefaultSuggestionElement('or a state');
+    }
+
+    const lowerCaseFilter = (value, searchCriteria) => value.toLowerCase().includes(searchCriteria.toLowerCase());
+    const splitSearchCriteriaIntoWords = (searchCriteria) => searchCriteria.includes(' ') ? searchCriteria.trim().split(
+      ' ') : [searchCriteria.trim()];
+
+    function searchSuggestions(cities, searchCriteria) {
+      const filteredCities = cities.filter(city => lowerCaseFilter(city.city, searchCriteria));
+      const filteredStates = cities.filter(city => lowerCaseFilter(city.state, searchCriteria));
+      const suggestions = [...filteredCities, ...filteredStates];
+
+      clearSuggestions();
+
+      if (suggestions.length > 0) {
+        const wordsToHighlight = splitSearchCriteriaIntoWords(searchCriteria);
+        suggestions.forEach(suggestion => addSuggestionElement(
+          suggestion.city,
+          suggestion.state,
+          suggestion.population,
+          wordsToHighlight));
+      } else {
+        addDefaultSuggestionElement('No results');
+      }
+    }
+
+    function handleSearch(event) {
+      const searchCriteria = event.target.value;
+      if (searchCriteria) {
+        fetchJSON(endpoint).then(cities => searchSuggestions(cities, searchCriteria));
+      } else {
+        addDefaultSuggestions();
+      }
+    }
+
+    searchElement.addEventListener('input', handleSearch);
+  </script>
 </body>
+
 </html>
