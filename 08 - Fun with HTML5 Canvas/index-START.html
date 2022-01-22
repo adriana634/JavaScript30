@@ -1,19 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>HTML5 Canvas</title>
 </head>
-<body>
-<canvas id="draw" width="800" height="800"></canvas>
-<script>
-</script>
 
-<style>
-  html, body {
-    margin: 0;
-  }
-</style>
+<body>
+  <canvas id="draw" width="800" height="800"></canvas>
+  <script>
+    const canvas = document.getElementById('draw');
+    const ctx = canvas.getContext('2d');
+    const colors = ['blue', 'red', 'yellow', 'pink', 'grey', 'black'];
+    const getRandomInt = (max) => Math.floor(Math.random() * max);
+    let colorIndex = getRandomInt(colors.length) % colors.length;
+
+    function drawLine(ctx, x, y) {
+      ctx.fillStyle = colors[colorIndex];
+      ctx.fillRect(x, y, 40, 40);
+    }
+
+    function handleMouseMove(event) {
+      const x = event.x;
+      const y = event.y;
+
+      drawLine(ctx, x, y);
+    }
+
+    function handleMouseDown(event) {
+      canvas.addEventListener('mousemove', handleMouseMove);
+    }
+
+    function handleMouseUp(event) {
+      colorIndex = getRandomInt(colors.length) % colors.length;
+      canvas.removeEventListener('mousemove', handleMouseMove);
+    }
+
+    canvas.addEventListener('mousedown', handleMouseDown);
+    canvas.addEventListener('mouseup', handleMouseUp);
+  </script>
+
+  <style>
+    html,
+    body {
+      margin: 0;
+    }
+  </style>
 
 </body>
+
 </html>
