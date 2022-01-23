@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Hold Shift to Check Multiple Checkboxes</title>
 </head>
+
 <body>
   <style>
-
     html {
       font-family: sans-serif;
       background: #ffc600;
@@ -17,7 +18,7 @@
       margin: 50px auto;
       background: white;
       border-radius: 5px;
-      box-shadow: 10px 10px 0 rgba(0,0,0,0.1);
+      box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.1);
     }
 
     .item {
@@ -30,7 +31,7 @@
       border-bottom: 0;
     }
 
-    input:checked + p {
+    input:checked+p {
       background: #F9F9F9;
       text-decoration: line-through;
     }
@@ -44,13 +45,13 @@
       padding: 20px;
       transition: background 0.2s;
       flex: 1;
-      font-family:'helvetica neue';
+      font-family: 'helvetica neue';
       font-size: 20px;
       font-weight: 200;
       border-left: 1px solid #D1E2FF;
     }
   </style>
-   <!--
+  <!--
    The following is a common layout you would see in an email client.
 
    When a user clicks a checkbox, holds Shift, and then clicks another checkbox a few rows down, all the checkboxes inbetween those two checkboxes should be checked.
@@ -95,7 +96,55 @@
     </div>
   </div>
 
-<script>
-</script>
+  <script>
+    const shiftKeyCode = 16;
+
+    let shiftKeyPressed = false;
+    let firstChoiceIndex = null;
+    let lastChoiceIndex = null;
+
+    const checkboxElements = Array.from(document.querySelectorAll("input[type='checkbox']"));
+
+    function checkSelectedElements(firstChoiceIndex, lastChoiceIndex) {
+      const selectedItems = checkboxElements.slice(firstChoiceIndex, lastChoiceIndex + 1);
+      selectedItems.forEach(selectedItem => selectedItem.checked = true);
+    }
+
+    function handleChange(event) {
+      if (shiftKeyPressed == true) {
+        lastChoiceIndex = checkboxElements.indexOf(event.target);
+
+        if (firstChoiceIndex != null && lastChoiceIndex != null) {
+          if (firstChoiceIndex > lastChoiceIndex) {
+            checkSelectedElements(lastChoiceIndex, firstChoiceIndex);
+          } else {
+            checkSelectedElements(firstChoiceIndex, lastChoiceIndex);
+          }
+
+          firstChoiceIndex = null;
+          lastChoiceIndex = null;
+        }
+      } else {
+        firstChoiceIndex = checkboxElements.indexOf(event.target);
+      }
+    }
+
+    function handleKeyDown(event) {
+      if (event.keyCode === shiftKeyCode) {
+        shiftKeyPressed = true;
+      }
+    }
+
+    function handleKeyUp(event) {
+      if (event.keyCode === shiftKeyCode) {
+        shiftKeyPressed = false;
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+    checkboxElements.forEach(checkboxElement => checkboxElement.addEventListener('change', handleChange));
+  </script>
 </body>
+
 </html>
