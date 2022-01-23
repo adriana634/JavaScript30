@@ -1,12 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Key Detection</title>
   <script type="text/javascript" src="https://www.cornify.com/js/cornify.js"></script>
+  <style>
+    body {
+      background-color: black;
+    }
+  </style>
 </head>
+
 <body>
-<script>
-</script>
+  <script>
+    const keySequence = [];
+    const secretKeySequence = 'asdk';
+    const keySequenceMaxLength = secretKeySequence.length;
+
+    function checkKeySequence(keys) {
+      const keySequence = keys.join('');
+      if (keySequence === secretKeySequence) {
+        cornify_add();
+      }
+    }
+
+    function handleKeyUp(event) {
+      if (keySequence.length === keySequenceMaxLength) {
+        keySequence.shift();
+      }
+
+      keySequence.push(event.key);
+      checkKeySequence(keySequence);
+    }
+
+    window.addEventListener('keyup', handleKeyUp);
+  </script>
 </body>
+
 </html>
