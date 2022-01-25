@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Mouse Shadow</title>
 </head>
+
 <body>
 
   <div class="hero">
@@ -11,30 +13,78 @@
   </div>
 
   <style>
-  html {
-    color: black;
-    font-family: sans-serif;
-  }
+    html {
+      color: black;
+      font-family: sans-serif;
+    }
 
-  body {
-    margin: 0;
-  }
+    body {
+      margin: 0;
+    }
 
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: black;
-  }
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: black;
+    }
 
-  h1 {
-    text-shadow: 10px 10px 0 rgba(0,0,0,1);
-    font-size: 100px;
-  }
+    h1 {
+      text-shadow: 10px 10px 0 rgba(0, 0, 0, 1);
+      font-size: 100px;
+    }
   </style>
 
-<script>
-</script>
+  <script>
+    const hero = document.querySelector('.hero');
+    const text = document.querySelector('h1');
+
+    function calcNewShadowPosition(
+      rectRight, rectX, mouseX,
+      rectBottom, rectY, mouseY) {
+      const rectWidth = rectRight - rectX;
+      const offsetX = rectRight - (rectWidth / 2);
+      const newX = event.x - offsetX;
+
+      const rectHeigth = rectBottom - rectY;
+      const offsetY = rectBottom - ((rectBottom - rectY) / 2);
+      const newY = event.y - offsetY;
+
+      return {
+        x: newX,
+        y: newY
+      };
+    }
+
+    function shadow(event) {
+      const x = event.x;
+      const y = event.y;
+      const rect = text.getBoundingClientRect();
+
+      const basePosition = calcNewShadowPosition(rect.right, rect.x, event.x, rect.bottom, rect.y, event.y);
+      const positions = [
+        basePosition,
+        {
+          x: basePosition.x * 2,
+          y: basePosition.y * 2
+        },
+        {
+          x: basePosition.x * 3,
+          y: basePosition.y * 3
+        },
+        {
+          x: basePosition.x * 4,
+          y: basePosition.y * 4
+        }
+      ];
+
+      text.style =
+        `text-shadow: ${positions[0].x}px ${positions[0].y}px 0 red, ${positions[1].x}px ${positions[1].y}px 0 blue, ${positions[2].x}px ${positions[2].y}px 0 yellow, ${positions[3].x}px ${positions[3].y}px 0 grey;`;
+    }
+
+    hero.addEventListener('mousemove', shadow);
+  </script>
 </body>
+
 </html>
