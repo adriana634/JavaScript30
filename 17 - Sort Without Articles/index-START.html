@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Sort Without Articles</title>
 </head>
+
 <body>
 
   <style>
@@ -26,12 +28,12 @@
       padding: 0;
       box-shadow: 0 0 0 20px rgba(0, 0, 0, 0.05);
     }
-    
+
     #bands li {
       border-bottom: 1px solid #efefef;
       padding: 20px;
     }
-    
+
     #bands li:last-child {
       border-bottom: 0;
     }
@@ -40,16 +42,72 @@
       color: #ffc600;
       text-decoration: none;
     }
-
   </style>
 
   <ul id="bands"></ul>
 
-<script>
-const bands = ['The Plot in You', 'The Devil Wears Prada', 'Pierce the Veil', 'Norma Jean', 'The Bled', 'Say Anything', 'The Midway State', 'We Came as Romans', 'Counterparts', 'Oh, Sleeper', 'A Skylit Drive', 'Anywhere But Here', 'An Old Dog'];
+  <script>
+    const bands = ['The Plot in You', 'The Devil Wears Prada', 'Pierce the Veil', 'Norma Jean', 'The Bled',
+      'Say Anything', 'The Midway State', 'We Came as Romans', 'Counterparts', 'Oh, Sleeper', 'A Skylit Drive',
+      'Anywhere But Here', 'An Old Dog'
+    ];
 
+    const bandList = document.querySelector('#bands');
+    const articles = ['the', 'an', 'a'];
 
-</script>
+    function bandStartsWithArticle(bandName) {
+      let startsWith = false;
+      for (let i = 0; i < articles.length && startsWith === false; i++) {
+        const article = articles[i];
+        startsWith = bandName.toLowerCase().startsWith(`${article} `);
+      }
+      return startsWith;
+    }
+
+    function replaceBandArticles(bandName) {
+      let bandNameWithoutArticles = bandName.toLowerCase();
+      for (let i = 0; i < articles.length; i++) {
+        const article = articles[i];
+        bandNameWithoutArticles = bandNameWithoutArticles.replace(article, '').trim();
+      }
+      return bandNameWithoutArticles;
+    }
+
+    function appendBand(bandName) {
+      const li = document.createElement('li');
+
+      const text = document.createTextNode(bandName);
+      li.appendChild(text);
+
+      bandList.appendChild(li);
+    }
+
+    const bandsWithoutArticles = bands.map((band, index) => {
+      if (bandStartsWithArticle(band)) {
+        return {
+          index,
+          name: replaceBandArticles(band)
+        };
+      } else {
+        return {
+          index,
+          name: band
+        };
+      }
+    });
+
+    bandsWithoutArticles.sort((bandA, bandB) => {
+      if (bandA.name.toLowerCase() < bandB.name.toLowerCase()) return -1;
+      if (bandA.name.toLowerCase() > bandB.name.toLowerCase()) return 1;
+      return 0;
+    });
+    const bandsSorted = bandsWithoutArticles.map(bandWithoutArticle => bands[bandWithoutArticle.index]);
+
+    bandsSorted.forEach(band => {
+      appendBand(band);
+    });
+  </script>
 
 </body>
+
 </html>
