@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Videos</title>
 </head>
+
 <body>
   <ul class="videos">
     <li data-time="5:43">
@@ -181,7 +183,35 @@
       Video 58
     </li>
   </ul>
-<script>
-</script>
+  <script>
+    const videoListItems = Array.from(document.querySelectorAll('.videos li'));
+
+    function convertTimeToSeconds(time) {
+      const [minutes, seconds] = time.split(':');
+      const totalSeconds = (Number(minutes) * 60) + Number(seconds);
+      return totalSeconds;
+    }
+
+    function convertSecondsToTime(totalSeconds) {
+      const fractionaryMinutes = totalSeconds / 60;
+      const fractionarySeconds = fractionaryMinutes % 1;
+      const fractionarySecondsToSeconds = (fractionarySeconds) => (fractionarySeconds * 60) / 100;
+
+      const minutes = Math.trunc(fractionaryMinutes);
+      const seconds = Math.round(fractionarySecondsToSeconds(fractionarySeconds));
+      const padTimeWithZeros = (time) => time.toString().padStart(2, '0')
+      const time = `${padTimeWithZeros(minutes)}:${padTimeWithZeros(seconds)}`;
+
+      return time;
+    }
+
+    const timeReducer = (accumulatedTime, nextVideoListItem) => {
+      const nextTime = nextVideoListItem.dataset.time;
+      return accumulatedTime + convertTimeToSeconds(nextTime);
+    };
+    const totalTime = videoListItems.reduce(timeReducer, 0);
+    console.log(`Total time: ${convertSecondsToTime(totalTime)}`);
+  </script>
 </body>
+
 </html>
