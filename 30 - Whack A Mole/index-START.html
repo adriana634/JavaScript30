@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Whack A Mole!</title>
   <link href='https://fonts.googleapis.com/css?family=Amatic+SC:400,700' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
   <h1>Whack-a-mole! <span class="score">0</span></h1>
@@ -32,11 +34,56 @@
     </div>
   </div>
 
-<script>
-  const holes = document.querySelectorAll('.hole');
-  const scoreBoard = document.querySelector('.score');
-  const moles = document.querySelectorAll('.mole');
+  <script>
+    const holes = document.querySelectorAll('.hole');
+    const scoreBoard = document.querySelector('.score');
+    const moles = document.querySelectorAll('.mole');
 
-</script>
+    const maxGameDurationInSeconds = 20;
+    const maxGameDurationInMilliseconds = maxGameDurationInSeconds * 1000;
+    const randomMoleIntervalInMilliseconds = 400;
+
+    function getRandomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min) + min);
+    }
+
+    function handleMoleTransitionEnd(event) {
+      const mole = event.currentTarget;
+      const hole = mole.parentElement;
+
+      mole.removeEventListener('transitionend', handleMoleTransitionEnd);
+      mole.removeEventListener('click', handleMoleClick)
+      hole.classList.remove('up');
+    }
+
+    function showMole(moleIndex) {
+      const hole = holes[moleIndex];
+      const mole = moles[moleIndex];
+
+      mole.addEventListener('transitionend', handleMoleTransitionEnd);
+      mole.addEventListener('click', handleMoleClick);
+      hole.classList.add('up');
+    }
+
+    function showRandomMole() {
+      const randomMoleIndex = getRandomInt(0, moles.length);
+      showMole(randomMoleIndex);
+    }
+
+    function handleMoleClick(event) {
+      const mole = event.currentTarget;
+      const currentScore = Number(scoreBoard.textContent);
+      const newScore = currentScore + 1;
+      scoreBoard.textContent = newScore;
+    }
+
+    function startGame() {
+      const showRandomMoleIntervalID = setInterval(showRandomMole, randomMoleIntervalInMilliseconds);
+      setTimeout(() => clearInterval(showRandomMoleIntervalID), maxGameDurationInMilliseconds);
+    }
+  </script>
 </body>
+
 </html>
